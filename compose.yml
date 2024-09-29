@@ -1,5 +1,5 @@
 services:
-  payload:
+  node:
     image: node:18-alpine
     ports:
       - '3000:3000'
@@ -9,8 +9,7 @@ services:
     working_dir: /home/node/app/
     command: sh -c "yarn install && yarn dev"
     depends_on:
-      db:
-        condition: service_healthy
+      - postgres
     env_file:
       - .env
     labels:
@@ -18,22 +17,17 @@ services:
       - 'traefik.http.routers.sajt_node.rule=Host(`sajt.docker.localhost`)'
 
 
-  db:
+  postgres:
     image: postgres:latest
-    container_name: postgres_db
+    container_name: postgres
     environment:
-      POSTGRES_USER: yourusername
-      POSTGRES_PASSWORD: yourpassword
-      POSTGRES_DB: yourdatabase
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "psql -U yourusername -d yourdatabase -c 'SELECT 1' || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   postgres_data:

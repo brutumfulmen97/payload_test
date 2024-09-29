@@ -14,6 +14,7 @@ export interface Config {
     pages: Page;
     posts: Post;
     media: Media;
+    slider: Slider;
     categories: Category;
     users: User;
     redirects: Redirect;
@@ -542,6 +543,23 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "slider".
+ */
+export interface Slider {
+  id: number;
+  slider?:
+    | {
+        title?: string | null;
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -626,6 +644,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'slider';
+        value: number | Slider;
       } | null)
     | ({
         relationTo: 'categories';
