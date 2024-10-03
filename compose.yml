@@ -7,28 +7,28 @@ services:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
     working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
+    command: sh -c "npm install pnpm -g && pnpm dev"
     depends_on:
-      - postgres
+      - db
     env_file:
       - .env
     labels:
       - 'traefik.http.services.sajt_node.loadbalancer.server.port=3000'
       - 'traefik.http.routers.sajt_node.rule=Host(`sajt.docker.localhost`)'
 
-
-  postgres:
+  db:
     image: postgres:latest
-    container_name: postgres
+    container_name: db
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pwd
-      POSTGRES_DB: db
+      POSTGRES_DB: database
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
-  postgres_data:
+  pgdata:
   node_modules:
